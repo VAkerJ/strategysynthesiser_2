@@ -165,19 +165,26 @@ class Game_graph(Graph):
 
                     try:
                         rawAction = re.findall('label=\"\(*\((.*)\)', line)[0]
-                        #rawAction = re.findall('action=\"\(*\(\'([^\"]*)\'\)', line)[0] #ifall man vill ignorera '-'
                         actions = re.split('\), \(', rawAction)
                         actions = [tuple(re.split(', ', a)) for a in actions]
+
+                        rawAction_complete = re.findall('action=\"\(*\(\'([^\"]*)\'\)', line)[0] #ifall man vill ignorera '-'
+                        actions_complete = re.split('\'\), \(\'', rawAction_complete)
+                        actions_complete = [tuple(re.split('\', \'', a)) for a in actions_complete]
                         
                         if len(actions[0]) == 1: actions[0] = actions[0]*len(self.agents)
+                        if len(actions_complete[0]) == 1: actions_complete[0] = actions_complete[0]*len(self.agents)
 
                     except:
                         actions = re.search('label=\"\((\-)', line).group(1)[0]
-                        #actions = re.search('action=\"\((\-)', line).group(1)[0]
+                        actions_complete = re.search('action=\"\((\-)', line).group(1)[0]
 
+                    nr_of_actions = len(actions)
+                    actions.extend(actions_complete)
                     int_actions = []
                     agent_actions = [[] for a in self.agents]
-                    for action in actions:
+                    print(actions)
+                    for idc, action in enumerate(actions):
                         for ida, act in enumerate(action):
                             if ida not in self.to_int_actdict:
                                 self.to_int_actdict[ida] = {}
@@ -186,7 +193,9 @@ class Game_graph(Graph):
                                 self.to_int_actdict[ida][act] = len(self.to_int_actdict[ida])
                                 self.to_str_actdict[ida][self.to_int_actdict[ida][act]] = act
 
-                            agent_actions[ida].append(self.to_int_actdict[ida][act])
+                            if idc < nr_of_actions:
+                                print(act)
+                                agent_actions[ida].append(self.to_int_actdict[ida][act])
                         
                         int_actions.append(tuple([self.to_int_actdict[ida][a] for ida, a in enumerate(action)]))
                     
@@ -194,7 +203,7 @@ class Game_graph(Graph):
                         if self.int_locdict[nodes[0]][ida] != self.int_locdict[nodes[1]][ida]:
                             self.agents[ida].add_int_edge(self.int_locdict[nodes[0]][ida], self.int_locdict[nodes[1]][ida], list(set(a)))
 
-
+                    actions = list(set(actions))
                     self.add_edge(self.locdict[nodes[0]], self.locdict[nodes[1]], actions)
                     self.add_int_edge(self.int_locdict[nodes[0]], self.int_locdict[nodes[1]], int_actions)
 
