@@ -138,7 +138,6 @@ class Game_graph(Graph):
                     break
 
             except Exception as e:
-                print("hssasasa")
                 print(e)
                 break
 
@@ -183,7 +182,7 @@ class Game_graph(Graph):
                     actions.extend(actions_complete)
                     int_actions = []
                     agent_actions = [[] for a in self.agents]
-                    print(actions)
+
                     for idc, action in enumerate(actions):
                         for ida, act in enumerate(action):
                             if ida not in self.to_int_actdict:
@@ -193,9 +192,7 @@ class Game_graph(Graph):
                                 self.to_int_actdict[ida][act] = len(self.to_int_actdict[ida])
                                 self.to_str_actdict[ida][self.to_int_actdict[ida][act]] = act
 
-                            if idc < nr_of_actions:
-                                print(act)
-                                agent_actions[ida].append(self.to_int_actdict[ida][act])
+                            if idc < nr_of_actions: agent_actions[ida].append(self.to_int_actdict[ida][act])
                         
                         int_actions.append(tuple([self.to_int_actdict[ida][a] for ida, a in enumerate(action)]))
                     
