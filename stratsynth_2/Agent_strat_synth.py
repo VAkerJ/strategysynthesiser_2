@@ -2,8 +2,20 @@ from copy import deepcopy
 
 
 class Backwards_strat_synth():
+    """
+    Uses a width first search from the win_nodes to a node in the start_nodes and saves the path traversed from an exhausted search as an initial strategy.
+    NOTE: The actions saved to the strategy is the first action in the list of actions for the first vertex in the list of verticies for each node
+    The remaining actions are w.r.t. each node, saved as values with the nodes as keys in the conflict_nodes dictionary.
+    """
 
     def __init__(self, game_graph, win_nodes, lose_nodes, start_nodes, agent_id):
+        """
+        param game_graph: the graph for the agents game
+        param win_nodes: the nodes wherein they agent considers the game won
+        param lose_nodes: the nodes wherein they agent considers the game lost
+        param start_nodes: the nodes from which the agent may start the game
+        param agent_id: the id of the agent
+        """
         self.win_nodes = win_nodes
         self.lose_nodes = lose_nodes
         self.start_nodes = start_nodes
@@ -14,12 +26,21 @@ class Backwards_strat_synth():
 
     @staticmethod
     def is_inv():
+        """
+        return: If the inverted graph should be used
+        """
         return True
 
     def is_empty(self):
+        """
+        return: If no more strategies can be generated
+        """
         return not(bool(self.conflict_nodes))
 
     def generate_main_partial(self):
+        """
+        Generates the initial strategy using the width first algorithm and saves the nodes conflicting with this strategy.
+        """
 
         cn = self.conflict_nodes
         
@@ -53,6 +74,12 @@ class Backwards_strat_synth():
         return
 
     def generate_new_partials(self):
+        """
+        Takes all excisting strategies and replaces the action in one node with one unused action from the conflict_nodes to create an equal amount of
+        untested winning strategies.
+        
+        return: the new strategies, if no new strategies can be generated
+        """
         cn = self.conflict_nodes
         try:
             node = next(iter(cn.keys()))
@@ -73,8 +100,20 @@ class Backwards_strat_synth():
         return new_p, not(cn)
 
 class Forwards_strat_synth():
+    """
+    Uses a width first search from the start_nodes to a node in the win_nodes and saves the path traversed from an exhausted search as an initial strategy.
+    NOTE: The actions saved to the strategy is the first action in the list of actions for the first vertex in the list of verticies for each node
+    The remaining actions are w.r.t. each node, saved as values with the nodes as keys in the conflict_nodes dictionary.
+    """
 
     def __init__(self, game_graph, win_nodes, lose_nodes, start_nodes, agent_id):
+        """
+        param game_graph: the graph for the agents game
+        param win_nodes: the nodes wherein they agent considers the game won
+        param lose_nodes: the nodes wherein they agent considers the game lost
+        param start_nodes: the nodes from which the agent may start the game
+        param agent_id: the id of the agent
+        """
         self.win_nodes = win_nodes
         self.lose_nodes = lose_nodes
         self.start_nodes = start_nodes
@@ -85,12 +124,21 @@ class Forwards_strat_synth():
 
     @staticmethod
     def is_inv():
+        """
+        return: If the inverted graph should be used
+        """
         return False
 
     def is_empty(self):
+        """
+        return: If no more strategies can be generated
+        """
         return not(bool(self.conflict_nodes))
 
     def generate_main_partial(self):
+        """
+        Generates the initial strategy using the width first algorithm and saves the nodes conflicting with this strategy.
+        """
 
         cn = self.conflict_nodes
         
@@ -130,6 +178,12 @@ class Forwards_strat_synth():
         return
 
     def generate_new_partials(self):
+        """
+        Takes all excisting strategies and replaces the action in one node with one unused action from the conflict_nodes to create an equal amount of
+        untested winning strategies.
+        
+        return: the new strategies, if no new strategies can be generated
+        """
         cn = self.conflict_nodes
         try:
             node = next(iter(cn.keys()))
@@ -150,8 +204,20 @@ class Forwards_strat_synth():
         return new_p, not(cn)
 
 class Backwards_partial_synth():
+    """
+    Uses a width first search from the win_nodes to a node in the start_nodes and saves each possible path through the game as an initial strategy.
+    NOTE: The actions saved to the strategy is the first action in the list of actions for the first vertex in the list of verticies for each node
+    The remaining actions are w.r.t. each node and path, saved as values with the node and path as keys in the conflict_nodes dictionary.
+    """
 
     def __init__(self, game_graph, win_nodes, lose_nodes, start_nodes, agent_id):
+        """
+        param game_graph: the graph for the agents game
+        param win_nodes: the nodes wherein they agent considers the game won
+        param lose_nodes: the nodes wherein they agent considers the game lost
+        param start_nodes: the nodes from which the agent may start the game
+        param agent_id: the id of the agent
+        """
         self.win_nodes = win_nodes
         self.lose_nodes = lose_nodes
         self.start_nodes = start_nodes
@@ -162,13 +228,23 @@ class Backwards_partial_synth():
 
     @staticmethod
     def is_inv():
+        """
+        return: If the inverted graph should be used
+        """
         return True
 
     def is_empty(self):
+        """
+        return: If no more strategies can be generated
+        """
         return not(bool(self.conflict_nodes))
 
     def generate_main_partial(self):
-
+        """
+        Generates an initial partial strategy for each path through the game from each win_node to a node in start_nodes
+        return: the partial strategies generated
+        """
+        
         for win_node in self.win_nodes:
             partial_id = len(self.partials)
             if partial_id == 0: self.partials.append({})
@@ -177,6 +253,11 @@ class Backwards_partial_synth():
         return self.partials
 
     def generate_new_partials(self):
+        """
+        Takes a partial strategy with conflict_nodes and creates all possible partial strategies from these conflict_nodes.
+        
+        return: the new strategies, if no new strategies can be generated
+        """
         cn = self.conflict_nodes
         try:
             partial_id = next(iter(cn.keys()))
@@ -205,6 +286,11 @@ class Backwards_partial_synth():
         return new_p, not(cn)
 
     def traverse_game(self, current_node, partial_id):
+        """
+        Traverses the game one step, generating a new path and id if the path through the game splits. Deleting the path if it reaches a dead end or a lose_node
+        param current_node: the node from which one wishes to move
+        param partial_id: the ID of the path through the game on which one is traversing
+        """
         if current_node in self.start_nodes: return
 
         cn = self.conflict_nodes
@@ -244,8 +330,20 @@ class Backwards_partial_synth():
         return
 
 class Forwards_partial_synth():
+    """
+    Uses a width first search from the start_nodes to a node in the win_nodes and saves each possible path through the game as an initial strategy.
+    NOTE: The actions saved to the strategy is the first action in the list of actions for the first vertex in the list of verticies for each node
+    The remaining actions are w.r.t. each node and path, saved as values with the node and path as keys in the conflict_nodes dictionary.
+    """
 
     def __init__(self, game_graph, win_nodes, lose_nodes, start_nodes, agent_id):
+        """
+        param game_graph: the graph for the agents game
+        param win_nodes: the nodes wherein they agent considers the game won
+        param lose_nodes: the nodes wherein they agent considers the game lost
+        param start_nodes: the nodes from which the agent may start the game
+        param agent_id: the id of the agent
+        """
         self.win_nodes = win_nodes
         self.lose_nodes = lose_nodes
         self.start_nodes = start_nodes
@@ -256,12 +354,22 @@ class Forwards_partial_synth():
 
     @staticmethod
     def is_inv():
+        """
+        return: If the inverted graph should be used
+        """
         return False
 
     def is_empty(self):
+        """
+        return: If no more strategies can be generated
+        """
         return not(bool(self.conflict_nodes))
 
     def generate_main_partial(self):
+        """
+        Generates an initial partial strategy for each path through the game from each win_node to a node in start_nodes
+        return: the partial strategies generated
+        """
 
         for start_node in self.start_nodes:
             partial_id = len(self.partials)
@@ -271,6 +379,11 @@ class Forwards_partial_synth():
         return self.partials
 
     def generate_new_partials(self):
+        """
+        Takes a partial strategy with conflict_nodes and creates all possible partial strategies from these conflict_nodes.
+        
+        return: the new strategies, if no new strategies can be generated
+        """
         cn = self.conflict_nodes
         try:
             partial_id = next(iter(cn.keys()))
@@ -299,6 +412,11 @@ class Forwards_partial_synth():
         return new_p, not(cn)
 
     def traverse_game(self, current_node, partial_id):
+        """
+        Traverses the game one step, generating a new path and id if the path through the game splits. Deleting the path if it reaches a dead end or a lose_node
+        param current_node: the node from which one wishes to move
+        param partial_id: the ID of the path through the game on which one is traversing
+        """
         if current_node in self.win_nodes: return
 
         cn = self.conflict_nodes
