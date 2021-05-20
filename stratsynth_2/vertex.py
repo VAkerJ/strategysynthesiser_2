@@ -15,7 +15,7 @@ class Vertex:
         Adds a action-labeled transition to a new node.
 
         :param new_vert: node that action transitions to.
-        :param action: action that transitions
+        :param action: list of action(s) that transitions
         :return:
         """
         if new_vert in self.adjacent_vert_dict:
@@ -47,4 +47,7 @@ class Vertex:
         return list(self.adjacent_vert_dict.keys())
 
     def get_adjacent_actions(self):
+        """
+        :return: Action(s) that traverses to another node
+        """
         return list(self.adjacent_vert_dict.values())
