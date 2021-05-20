@@ -7,6 +7,15 @@ from .Agent_strat_synth import *
 class Coalition_strat_synth():
 
     def __init__(self, gamename, win_nodes=[("win", "win")], lose_nodes=[("lose", "lose")], start_nodes=[("start", "start")], goal="find_one", nr_of_strats=1, method = "backwards"):
+        """
+        param gamename: the name of the .dot file from which the game should be taken.
+        param win_nodes: a list of all the nodes in the coaltion games which should be considered a win, where these nodes are tuples of the agents states in that game-state.
+        param lose_nodes: a list of all the nodes in the coaltion games which should be considered a loss, where these nodes are tuples of the agents states in that game-state.
+        param start_nodes: a list of all the nodes in the coaltion games from which the game may start, where these nodes are tuples of the agents states in that game-state.
+        param goal: what task the class should strive to complete
+        param nr_of_strats: how many strategies the class should attempt to find if using the 'find_n' goal
+        param method: what algorithm the class should use to find strategies for in the agents games
+        """
         self.game = None
         self.agent_graphs = None
         self.filename = gamename
@@ -49,6 +58,9 @@ class Coalition_strat_synth():
 
 
     def start_test(self):
+        """
+        Starts by testing if the win lose and start nodes are valid, then attempts to find achieve the goal and prints the synthesied strategies when finished.
+        """
 
         test = Game_graph(self.filename)
         test.deltaDic()
@@ -73,6 +85,14 @@ class Coalition_strat_synth():
             self.print_strats()
 
     def test_nodes(self, dic, nodes, name):
+        """
+        tests the given nodes to see if they are valid, and if so, converts them to integers, if note, removes them from the set
+        param dic: dictionary that converts nodes from string to integers
+        param nodes: the nodes to be tested
+        param name: the type of nodes given
+        
+        return: the set of valid nodes in integer form
+        """
         remove = []
         for node in nodes:
             for idn, n in enumerate(node):
@@ -86,6 +106,11 @@ class Coalition_strat_synth():
 
 
     def find_strategy(self):
+        """
+        Generates an initial strategy for each agent and then tests this profile of strategies on the coalition game.
+        If the task/goal is no complete new strategeis are generated and tested incrementally until it is, or no new strategies can be generated.
+        The winning strategies are then printed
+        """
 
         win_n = array(self.win_nodes).T
         lose_n = array(self.lose_nodes).T
@@ -108,6 +133,12 @@ class Coalition_strat_synth():
         
 
     def find_some_strats(self, agents):
+        """
+        Takes the already generated strategeis for an agent and generates new ones, then tests these new ones in combinations with the other agents
+        previously excisting strategies.
+        
+        param agents: The objects containing the agents and their already generated strategies.
+        """
         while not self.done:
             for agent in agents:
                 partials, empty = agent.generate_new_partials()
@@ -121,6 +152,11 @@ class Coalition_strat_synth():
                 if self.done: break
 
     def find_all_strats(self, agents):
+        """
+        Generates all possible strategies for alla agents, and then tests all of them att the same time.
+        
+        param agents: The objects containing the agents and their already generated strategies.
+        """
         for agent in agents:
             empty = agent.is_empty()
             while not empty :
@@ -130,6 +166,12 @@ class Coalition_strat_synth():
 
 
     def test_strats(self, partials=[], agent_id=-1):
+        """
+        Tests all possible new profiles of strategies on the coalition game
+        
+        param partials: the newly generated strategies for one agent
+        param agent_id: the ID of the agent for which the newly generated strategies belong
+        """
         p_list = [[]]*self.nr_of_agents
 
         if partials: p_list[agent_id] = partials
@@ -143,6 +185,15 @@ class Coalition_strat_synth():
         return 
 
     def test_strat(self, strat):
+        """
+        Traverses the coalition game using the given strategy and saves it as having won if it can reach a win_node and saves it as having lost if it can reach
+        a lose_node or possibly loop.
+        
+        NOTE: The algorithm does not consider splitting paths as different paths in the game. So it wrongly classifies games as having lost if a path splits and
+        the joins a different path.
+        
+        param strat: the agents profile of strategies that is to be tested
+        """
         for start in self.start_nodes:
             won = False
             lost = False
@@ -188,6 +239,13 @@ class Coalition_strat_synth():
         return
 
     def add_strat(self, start, strat, lost):
+        """
+        Adds a strategy to the list of winning strategies.
+        
+        param start: What node the strategy starts from
+        param strat: the strategy
+        param lost: if the strategy may lose
+        """
         strat, start = self.translate_strat(strat, start)
         if start not in self.strats: self.strats.update({start : {"surely winning" : [], "winning" : []}})
 
@@ -201,12 +259,24 @@ class Coalition_strat_synth():
 
 
     def translate_strat(self, strat, start):
+        """
+        Converts the strat from being in the integer fromat to being represented by strings
+        
+        param strat: the strategy to be converted
+        param start: the starting node in the strategy
+        
+        return: the converted strategy and start node
+        """
         strat = tuple([{self.to_str[0][ida][state]:self.to_str[1][ida][action] for state, action in S.items()} for ida, S in enumerate(strat)])
         start = tuple([self.to_str[0][ida][state] for ida, state in enumerate(start)])
         return strat, start
 
 
-    def print_strats(self): # den här kan nog skrivas om lite bättre
+    def print_strats(self):
+        """
+        An uggly but simple way of printing the winning strategies.
+        """
+        
         print("\nNumber of strategies found")
         print("Winning: " + str(self.nr_of_w) + ", Surely Winning: " + str(self.nr_of_sw))
         print("Total: " + str(self.nr_of_w + self.nr_of_sw))
@@ -226,6 +296,10 @@ class Coalition_strat_synth():
             print("-"*200)
 
     def check_criterion(self):
+        """
+        check if the goal has been achieved
+        return: if the goal is achieved
+        """
         if self.goal == self.goals[0] or self.goal == self.goals[3]: #find one or n
             self.done = bool(self.nr_of_w + self.nr_of_sw >= self.nr_of_strats)
 
