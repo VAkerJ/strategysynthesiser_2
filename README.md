@@ -1,5 +1,5 @@
 # strategysynthesiser_2
-This tool has been created to synthesise strategies for multi-agent games of imperfect information against nature that have been undergone an expansion in the form of the multi agent knowledge based subset construction using this MKBSC-tool by Helmer and Nylen, found at https://github.com/helmernylen/mkbsc.
+This tool has been created by David Berisha & Viktor Åkerblom Jonsson, to synthesise strategies for multi-agent games of imperfect information against nature that have been undergone an expansion in the form of the multi agent knowledge based subset construction using this MKBSC-tool by Helmer and Nylen, found at https://github.com/helmernylen/mkbsc.
 
 ## Important Files
 The tool contains the following important files.
