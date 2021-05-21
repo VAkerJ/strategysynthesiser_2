@@ -38,9 +38,9 @@ Use the MKBSC-tool to expand the game you wish to test. Create a directory named
 ### Running the tool
 #### Setup
 By running
-'''
+```
 game = Coalition_strat_synth(gamename=name + "/GK", win_nodes=win_nodes, lose_nodes=lose_nodes, start_nodes=start_nodes, goal=goal, nr_of_strats=nos, method = method)
-'''
+```
 game = the name of the games directory in pictures.
 
 win_nodes = A list of tuples representing the winning states in the coalition game. Where each element in the tuple is the agents observation-state in that winning state presented in as a string.
@@ -57,14 +57,14 @@ method = The method for finding strategies for the agents games. These methods m
 
 #### Running
 When the setup is done, everything can be run using
-'''
+```
 game.start_test()
-'''
+```
 
 #### Example of main.py
 Here is an example of how your main.py could look.
 
-'''
+```
 #!/usr/bin/env python3
 
 from mkbsc import MultiplayerGame, iterate_until_isomorphic, \
@@ -112,9 +112,9 @@ export(GK, "GK", view=False, folder = directory)
 
 game = Coalition_strat_synth(gamename=name + "/GK", win_nodes=[("win", "win")], lose_nodes=[("lose", "lose")], start_nodes=[("start", "start")])
 game.start_test()
-'''
+```
 
 Which is then run on the terminal using
-'''
+```
 python3 main.py
-'''
+```
