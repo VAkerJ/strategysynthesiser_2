@@ -43,11 +43,11 @@ game = Coalition_strat_synth(gamename=name + "/GK", win_nodes=win_nodes, lose_no
 ```
 game = the name of the games directory in pictures.
 
-win_nodes = A list of tuples representing the winning states in the coalition game. Where each element in the tuple is the agents observation-state in that winning state presented in as a string.
+win_nodes = A list of tuples representing the winning states in the expanded coalition game. Where each element in the tuple is the agents observation-state in that winning state presented in as a string.
 
-lose_nodes = A list of tuples representing the losing states in the coalition game. Where each element in the tuple is the agents observation-state in that losing state presented in as a string.
+lose_nodes = A list of tuples representing the losing states in the expanded coalition game. Where each element in the tuple is the agents observation-state in that losing state presented in as a string.
 
-start_nodes = A list of tuples representing the starting states in the coalition game. Where each element in the tuple is the agents observation-state in that starting state presented in as a string.
+start_nodes = A list of tuples representing the starting states in the expanded coalition game. Where each element in the tuple is the agents observation-state in that starting state presented in as a string.
 
 goal = the goal to strive for when running the tool. May be 'find_one' if one only wishes to find at least one strategy, 'find_n' if one wishes to find at least 'n' strategies and 'find_all' if one wishes to find as many strategeis as possible.
 
