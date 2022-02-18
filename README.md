@@ -41,7 +41,7 @@ By running
 ```
 game = Coalition_strat_synth(gamename=name + "/GK", win_nodes=win_nodes, lose_nodes=lose_nodes, start_nodes=start_nodes, goal=goal, nr_of_strats=nos, method = method)
 ```
-game = the name of the games directory in pictures.
+name = the name of the games directory in pictures.
 
 win_nodes = A list of tuples representing the winning states in the expanded coalition game. Where each element in the tuple is the agents observation-state in that winning state presented in as a string.
 
